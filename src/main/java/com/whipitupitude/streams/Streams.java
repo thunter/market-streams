@@ -8,10 +8,14 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Branched;
 import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.GlobalKTable;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.KeyValueMapper;
+import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.kstream.ValueJoiner;
 import org.apache.kafka.streams.processor.TopicNameExtractor;
-
+import org.apache.kafka.streams.state.KeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +29,8 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+
+import javax.swing.text.Position;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
@@ -60,6 +66,10 @@ public class Streams implements Callable<Integer> {
     static Topology buildTopology(String inputTopic, String outputTopic, Properties properties) {
         Serde<String> stringSerde = Serdes.String();
         Serde<TradeAvro> tradeSerde = AvroSerdes.TradeAvro(properties.getProperty("schema.registry.url"), false);
+        Serde<PositionAvro> positionSerde = AvroSerdes.PositionAvro(properties.getProperty("schema.registry.url"),
+                false);
+        Serde<TradeOpportunityAvro> opportunitySerde = AvroSerdes
+                .TradeOpportunityAvro(properties.getProperty("schema.registry.url"), false);
 
         final TopicNameExtractor<String, TradeAvro> buySellTopicExtractor = (key, trade, recordContext) -> {
             final String buySell = trade.getBuySell().toString();
@@ -73,8 +83,24 @@ public class Streams implements Callable<Integer> {
 
         StreamsBuilder builder = new StreamsBuilder();
 
-        KStream<String, TradeAvro> s = builder.stream(inputTopic, Consumed.with(stringSerde, tradeSerde));
-        s.to(buySellTopicExtractor, Produced.with(stringSerde, tradeSerde));
+        KStream<String, TradeAvro> tradesStream = builder.stream(inputTopic, Consumed.with(stringSerde, tradeSerde));
+        tradesStream.to(buySellTopicExtractor, Produced.with(stringSerde, tradeSerde));
+
+        GlobalKTable<String, PositionAvro> positionsTable = builder.globalTable("positions",
+                Consumed.with(stringSerde, positionSerde));
+
+        ValueJoiner<TradeAvro, PositionAvro, TradeOpportunityAvro> tradeOppJoiner = (trade,
+                position) -> new TradeOpportunityAvro(trade.getSymbol(), position.getLastTradePrice(), trade.getPrice(),
+                        trade.getBuySell(), position.getPosition());
+
+        KStream<String, TradeOpportunityAvro> joinedStream = tradesStream.join(positionsTable,
+                (leftKey, leftValue) -> leftKey, (trade, position) -> {
+                    return new TradeOpportunityAvro(trade.getSymbol(), position.getLastTradePrice(), trade.getPrice(),
+                            trade.getBuySell(), position.getPosition());
+                });
+
+        // joinedStream.to("trades.stream.opportunities", Produced.with(stringSerde,
+        // opportunitySerde));
 
         return builder.build();
     }
