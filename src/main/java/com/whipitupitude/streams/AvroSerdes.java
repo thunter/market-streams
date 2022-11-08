@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.kafka.common.serialization.Serde;
 import com.whipitupitude.market.TradeAvro;
 import com.whipitupitude.market.PositionAvro;
+import com.whipitupitude.market.PriceAvro;
 import com.whipitupitude.market.TradeOpportunityAvro;
 
 public class AvroSerdes {
@@ -26,6 +27,13 @@ public class AvroSerdes {
     public static Serde<TradeOpportunityAvro> TradeOpportunityAvro(String url, boolean isKey) {
         Map<String, String> serdeConfig = Collections.singletonMap("schema.registry.url", url);
         Serde<TradeOpportunityAvro> serde = new SpecificAvroSerde<>();
+        serde.configure(serdeConfig, isKey);
+        return serde;
+    }
+
+    public static Serde<PriceAvro> PriceAvro(String url, boolean isKey) {
+        Map<String, String> serdeConfig = Collections.singletonMap("schema.registry.url", url);
+        Serde<PriceAvro> serde = new SpecificAvroSerde<>();
         serde.configure(serdeConfig, isKey);
         return serde;
     }

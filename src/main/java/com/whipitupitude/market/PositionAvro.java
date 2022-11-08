@@ -14,10 +14,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class PositionAvro extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 4523396066328299009L;
+  private static final long serialVersionUID = 9171509805734449408L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"PositionAvro\",\"namespace\":\"com.whipitupitude.market\",\"fields\":[{\"name\":\"symbol\",\"type\":\"string\"},{\"name\":\"lastTradePrice\",\"type\":\"double\"},{\"name\":\"position\",\"type\":\"int\"},{\"name\":\"lastTradeTime\",\"type\":\"long\",\"logicalType\":\"timestamp-mills\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"PositionAvro\",\"namespace\":\"com.whipitupitude.market\",\"fields\":[{\"name\":\"symbol\",\"type\":\"string\"},{\"name\":\"lastTradePrice\",\"type\":\"double\"},{\"name\":\"position\",\"type\":\"int\"},{\"name\":\"lastTradeTime\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -76,7 +76,7 @@ public class PositionAvro extends org.apache.avro.specific.SpecificRecordBase im
   private java.lang.CharSequence symbol;
   private double lastTradePrice;
   private int position;
-  private long lastTradeTime;
+  private java.lang.CharSequence lastTradeTime;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -92,7 +92,7 @@ public class PositionAvro extends org.apache.avro.specific.SpecificRecordBase im
    * @param position The new value for position
    * @param lastTradeTime The new value for lastTradeTime
    */
-  public PositionAvro(java.lang.CharSequence symbol, java.lang.Double lastTradePrice, java.lang.Integer position, java.lang.Long lastTradeTime) {
+  public PositionAvro(java.lang.CharSequence symbol, java.lang.Double lastTradePrice, java.lang.Integer position, java.lang.CharSequence lastTradeTime) {
     this.symbol = symbol;
     this.lastTradePrice = lastTradePrice;
     this.position = position;
@@ -119,7 +119,7 @@ public class PositionAvro extends org.apache.avro.specific.SpecificRecordBase im
     case 0: symbol = (java.lang.CharSequence)value$; break;
     case 1: lastTradePrice = (java.lang.Double)value$; break;
     case 2: position = (java.lang.Integer)value$; break;
-    case 3: lastTradeTime = (java.lang.Long)value$; break;
+    case 3: lastTradeTime = (java.lang.CharSequence)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -179,7 +179,7 @@ public class PositionAvro extends org.apache.avro.specific.SpecificRecordBase im
    * Gets the value of the 'lastTradeTime' field.
    * @return The value of the 'lastTradeTime' field.
    */
-  public long getLastTradeTime() {
+  public java.lang.CharSequence getLastTradeTime() {
     return lastTradeTime;
   }
 
@@ -188,7 +188,7 @@ public class PositionAvro extends org.apache.avro.specific.SpecificRecordBase im
    * Sets the value of the 'lastTradeTime' field.
    * @param value the value to set.
    */
-  public void setLastTradeTime(long value) {
+  public void setLastTradeTime(java.lang.CharSequence value) {
     this.lastTradeTime = value;
   }
 
@@ -236,7 +236,7 @@ public class PositionAvro extends org.apache.avro.specific.SpecificRecordBase im
     private java.lang.CharSequence symbol;
     private double lastTradePrice;
     private int position;
-    private long lastTradeTime;
+    private java.lang.CharSequence lastTradeTime;
 
     /** Creates a new Builder */
     private Builder() {
@@ -413,7 +413,7 @@ public class PositionAvro extends org.apache.avro.specific.SpecificRecordBase im
       * Gets the value of the 'lastTradeTime' field.
       * @return The value.
       */
-    public long getLastTradeTime() {
+    public java.lang.CharSequence getLastTradeTime() {
       return lastTradeTime;
     }
 
@@ -423,7 +423,7 @@ public class PositionAvro extends org.apache.avro.specific.SpecificRecordBase im
       * @param value The value of 'lastTradeTime'.
       * @return This builder.
       */
-    public com.whipitupitude.market.PositionAvro.Builder setLastTradeTime(long value) {
+    public com.whipitupitude.market.PositionAvro.Builder setLastTradeTime(java.lang.CharSequence value) {
       validate(fields()[3], value);
       this.lastTradeTime = value;
       fieldSetFlags()[3] = true;
@@ -444,6 +444,7 @@ public class PositionAvro extends org.apache.avro.specific.SpecificRecordBase im
       * @return This builder.
       */
     public com.whipitupitude.market.PositionAvro.Builder clearLastTradeTime() {
+      lastTradeTime = null;
       fieldSetFlags()[3] = false;
       return this;
     }
@@ -456,7 +457,7 @@ public class PositionAvro extends org.apache.avro.specific.SpecificRecordBase im
         record.symbol = fieldSetFlags()[0] ? this.symbol : (java.lang.CharSequence) defaultValue(fields()[0]);
         record.lastTradePrice = fieldSetFlags()[1] ? this.lastTradePrice : (java.lang.Double) defaultValue(fields()[1]);
         record.position = fieldSetFlags()[2] ? this.position : (java.lang.Integer) defaultValue(fields()[2]);
-        record.lastTradeTime = fieldSetFlags()[3] ? this.lastTradeTime : (java.lang.Long) defaultValue(fields()[3]);
+        record.lastTradeTime = fieldSetFlags()[3] ? this.lastTradeTime : (java.lang.CharSequence) defaultValue(fields()[3]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -495,7 +496,7 @@ public class PositionAvro extends org.apache.avro.specific.SpecificRecordBase im
 
     out.writeInt(this.position);
 
-    out.writeLong(this.lastTradeTime);
+    out.writeString(this.lastTradeTime);
 
   }
 
@@ -510,7 +511,7 @@ public class PositionAvro extends org.apache.avro.specific.SpecificRecordBase im
 
       this.position = in.readInt();
 
-      this.lastTradeTime = in.readLong();
+      this.lastTradeTime = in.readString(this.lastTradeTime instanceof Utf8 ? (Utf8)this.lastTradeTime : null);
 
     } else {
       for (int i = 0; i < 4; i++) {
@@ -528,7 +529,7 @@ public class PositionAvro extends org.apache.avro.specific.SpecificRecordBase im
           break;
 
         case 3:
-          this.lastTradeTime = in.readLong();
+          this.lastTradeTime = in.readString(this.lastTradeTime instanceof Utf8 ? (Utf8)this.lastTradeTime : null);
           break;
 
         default:
